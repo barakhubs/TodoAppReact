@@ -1,25 +1,40 @@
-import React from "react";
-import { FaCheckSquare } from "react-icons/fa";
+import React, { useState } from "react";
+import Spinner from "./Spinner";
+import { completeTodo, deleteTodo } from "../services/TodoService";
+import { useNavigate } from "react-router-dom";
 
 const List = ({ todo }) => {
     const dateObject = new Date(todo.createdAt);
+    const navigate = useNavigate();
 
-    const completeTodo = async (todoId) => {
-        todo.isActive =!todo.isActive;
-        todo.title = todo.title.trim();
-        if (todo.title.length === 0) {
-            todo.isActive = false;
+    const completeTask = async (todoId) => {
+        const updatedTodo = {
+            id: todo.id,
+            title: todo.title,
+            isActive: !todo.isActive,
+            createdAt: todo.createdAt,
+        };
+
+        try {
+            // console.log(updatedTodo);
+            await completeTodo({updatedTodo});
+        } catch (error) {
+            console.error(error);
+        } finally {
+            navigate('/');
         }
-        setTodos(
-            todos.map((item) => {
-                if (item.id === todo.id) {
-                    return todo;
-                }
-                return item;
-            })
-        );
     };
 
+    const removeTodo = async (todo) => {
+        const confirm = window.confirm('Are you sure you want to delete this todo?');
+
+        if (confirm) {
+            await deleteTodo({todo});
+            navigate('/');
+        }
+        return;
+        
+    }
 
   return (
     <div className="row px-3 align-items-center todo-item rounded">
@@ -31,7 +46,7 @@ const List = ({ todo }) => {
               data-toggle="tooltip"
               data-placement="bottom"
               title="Mark as todo"
-              onClick={completeTodo(todo.id)}
+              onClick={() => completeTask(todo.id)}
             ></i>
           ) : (
             <i
@@ -39,6 +54,7 @@ const List = ({ todo }) => {
               data-toggle="tooltip"
               data-placement="bottom"
               title="Mark as complete"
+              onClick={() => completeTask(todo.id)}
             ></i>
           )}
         </h2>
@@ -61,7 +77,7 @@ const List = ({ todo }) => {
               data-toggle="tooltip"
               data-placement="bottom"
               title="Delete todo"
-              onClick={deleteTodo(todo.id)}
+              onClick={() => removeTodo(todo.id)}
             ></i>
           </h5>
         </div>
@@ -75,7 +91,7 @@ const List = ({ todo }) => {
               data-original-title="Created date"
             ></i>
             <label className="date-label my-2 text-black-50">
-              {dateObject.toLocaleString()}
+              {dateObject.toLocaleString(todo.id)}
             </label>
           </div>
         </div>
