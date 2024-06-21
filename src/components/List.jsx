@@ -1,41 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import Spinner from "./Spinner";
 import { completeTodo, deleteTodo } from "../services/TodoService";
 import { useNavigate } from "react-router-dom";
 
-const List = ({ todo, onComplete, onRemove }) => {
-  const dateObject = new Date(todo.createdAt);
-  const navigate = useNavigate();
+const List = ({ todo, refreshTodos }) => {
+    const dateObject = new Date(todo.createdAt);
+    const navigate = useNavigate();
 
-  const completeTask = async (todoId) => {
-    const updatedTodo = {
-      ...todo,
-      isActive: !todo.isActive,
+    const completeTask = async (todoId) => {
+        const updatedTodo = {
+            id: todo.id,
+            title: todo.title,
+            isActive: !todo.isActive,
+            createdAt: todo.createdAt,
+        };
+
+        try {
+            // console.log(updatedTodo);
+            await completeTodo({updatedTodo});
+        } catch (error) {
+            console.error(error);
+        } finally {
+            refreshTodos();
+            navigate('/');
+        }
     };
 
-    try {
-      await completeTodo({ updatedTodo });
-      onComplete(updatedTodo); // update state in TodoList
-    } catch (error) {
-      console.error(error);
-    } finally {
-      navigate('/');
-    }
-  };
+    const removeTodo = async (todoId) => {
+        const confirm = window.confirm('Are you sure you want to delete this todo?');
 
-  const removeTodo = async (todoId) => {
-    const confirm = window.confirm('Are you sure you want to delete this todo?');
-
-    if (confirm) {
-      try {
-        await deleteTodo({ todoId });
-        onRemove(todoId); // update state in TodoList
-      } catch (error) {
-        console.error(error);
-      } finally {
-        navigate('/');
-      }
+        if (confirm) {
+            await deleteTodo({todoId});
+            refreshTodos();
+            navigate('/');
+        }
+        return;
+        
     }
-  };
 
   return (
     <div className="row px-3 align-items-center todo-item rounded">
@@ -92,7 +93,7 @@ const List = ({ todo, onComplete, onRemove }) => {
               data-original-title="Created date"
             ></i>
             <label className="date-label my-2 text-black-50">
-              {dateObject.toLocaleString()}
+              {dateObject.toLocaleString(todo.id)}
             </label>
           </div>
         </div>

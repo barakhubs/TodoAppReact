@@ -15,9 +15,9 @@ const NewTodo = () => {
         };
         
         try {
-          await addTodo(newTodo);
+          await addTodo({newTodo});
           setTitle('');
-          navigate("/");
+          navigate(index);
         } catch (error) {
           console.log(error);
         } finally {

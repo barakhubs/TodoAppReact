@@ -13,9 +13,10 @@ export const getTodos = async () => {
     }
 }
 
-export const addTodo = async ({todo}) => {
+export const addTodo = async ({newTodo}) => {
     try {
-        const res = await axios.post(`${APP_URL}/todos`, todo);
+        // console.log(newTodo)
+        const res = await axios.post(`${APP_URL}/todos`, newTodo);
         toast.success("Todo added successfully");
         return res.data;
     } catch (error) {
@@ -27,7 +28,7 @@ export const addTodo = async ({todo}) => {
 export const completeTodo = async ({updatedTodo}) => {
     try {
         const res = await axios.put(`${APP_URL}/todos/${updatedTodo.id}`, updatedTodo);
-        toast.success("Todo completed successfully");
+        toast.success("Todo modified successfully");
         return res.data;
     } catch (error) {
         toast.error("An error occured while completing todo");
@@ -35,9 +36,9 @@ export const completeTodo = async ({updatedTodo}) => {
     }
 }
 
-export const deleteTodo = async ({todo}) => {
+export const deleteTodo = async ({todoId}) => {
     try {
-        const res = await axios.delete(`${APP_URL}/todos/${todo}`);
+        const res = await axios.delete(`${APP_URL}/todos/${todoId}`);
         toast.success("Todo deleted successfully");
         return res.data;
     } catch (error) {

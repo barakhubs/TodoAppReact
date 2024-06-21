@@ -5,35 +5,28 @@ import Spinner from "./Spinner";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState([]);
 
   // get todos
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const data = await getTodos();
-        setTodos(data);
-      } catch (error) {
-        console.error("Error fetching todos", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTodos = async () => {
+    try {
+      const data = await getTodos();
+      setTodos(data);
+    } catch (error) {
+      console.error("Error fetching todos", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTodos();
   }, []);
-
-  const handleCompleteTodo = (updatedTodo) => {
-    setTodos(todos.map(todo => todo.id === updatedTodo.id ? updatedTodo : todo));
-  };
-
-  const handleRemoveTodo = (todo) => {
-    setTodos(todos.filter(todoItem => todoItem.id !== todo));
-  };
-
   return (
     <>
-      {loading ? <Spinner /> : (
+      {loading ? (
+        <Spinner />
+      ) : (
         <>
           <div className="row m-1 p-3 px-5 justify-content-end">
             <div className="col-auto d-flex align-items-center">
@@ -73,12 +66,7 @@ const TodoList = () => {
           <div className="row mx-1 px-5 pb-3 w-80">
             <div className="col mx-auto">
               {todos.map((todo) => (
-                <List
-                  key={todo.id}
-                  todo={todo}
-                  onComplete={handleCompleteTodo}
-                  onRemove={handleRemoveTodo}
-                />
+                <List key={todo.id} todo={todo} refreshTodos={fetchTodos} />
               ))}
             </div>
           </div>
