@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { addTodo } from "../services/TodoService";
 import { toast } from "react-toastify";
 
-const NewTodo = () => {
+const NewTodo = ({refreshTodos}) => {
     const [loading, setLoading] = useState(true);
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
@@ -21,6 +21,7 @@ const NewTodo = () => {
         } catch (error) {
           console.log(error);
         } finally {
+          refreshTodos();
           setLoading(false);
         }
     }

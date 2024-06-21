@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { getTodos } from "../services/TodoService";
 import List from "./List";
 import Spinner from "./Spinner";
+import { FaExclamationTriangle } from "react-icons/fa";
+import NewTodo from "./NewTodo";
 
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
@@ -28,6 +30,7 @@ const TodoList = () => {
         <Spinner />
       ) : (
         <>
+        <NewTodo refreshTodos={fetchTodos}/>
           <div className="row m-1 p-3 px-5 justify-content-end">
             <div className="col-auto d-flex align-items-center">
               <label className="text-secondary my-2 pr-2 view-opt-label">
@@ -69,6 +72,12 @@ const TodoList = () => {
                 <List key={todo.id} todo={todo} refreshTodos={fetchTodos} />
               ))}
             </div>
+
+            {todos.length <= 0 && (
+                <div className="col px-1 m-1 d-flex align-items-center">
+                    <p>No todos found!</p>
+                </div>
+            )}
           </div>
         </>
       )}
