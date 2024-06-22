@@ -3,9 +3,9 @@ import { toast } from "react-toastify";
 
 const APP_URL = "https://localhost:7273/api";
 
-export const getTodos = async () => {
+export const getTodos = async ({filter, sortOrder}) => {
     try {
-        const res = await axios.get(`${APP_URL}/todos`);
+        const res = await axios.get(`${APP_URL}/todos?filter=${filter}&sort=${sortOrder}`);
         return res.data;
     } catch (error) {
         toast.error("An error occured while getting todos");
